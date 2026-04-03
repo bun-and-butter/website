@@ -1,0 +1,85 @@
+---
+interface Props {
+	title: string;
+	id?: string;
+	class?: string;
+	contentClass?: string;
+}
+
+const { title, id, class: className = "", contentClass = "" } = Astro.props;
+---
+
+<div id={id} class:list={["code-frame", className]}>
+	<div class="code-frame__topbar">
+		<div class="code-frame__dots" aria-hidden="true">
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+		<div class="code-frame__tab">{title}</div>
+	</div>
+
+	<div class:list={["code-frame__content", contentClass]}>
+		<slot />
+	</div>
+</div>
+
+<style>
+	@reference "../styles/global.css";
+
+	.code-frame {
+		@apply w-full min-w-0 max-w-full overflow-hidden rounded-3xl border border-white/10 bg-black/32 backdrop-blur-xl;
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.08),
+			0 20px 50px rgb(0 0 0 / 0.2);
+	}
+
+	.code-frame__topbar {
+		@apply flex min-w-0 items-center justify-between gap-3 border-b border-white/8 bg-black/28 px-4 py-3;
+	}
+
+	.code-frame__dots {
+		@apply flex items-center gap-2;
+	}
+
+	.code-frame__dots span {
+		@apply block size-2.5 rounded-full;
+	}
+
+	.code-frame__dots span:nth-child(1) {
+		background: rgb(255 95 86 / 0.9);
+	}
+
+	.code-frame__dots span:nth-child(2) {
+		background: rgb(255 189 46 / 0.9);
+	}
+
+	.code-frame__dots span:nth-child(3) {
+		background: rgb(39 201 63 / 0.9);
+	}
+
+	.code-frame__tab {
+		@apply min-w-0 max-w-full overflow-x-auto whitespace-nowrap rounded-full border border-white/8 bg-white/4 px-3 py-1 text-xs font-medium tracking-wide text-white/70;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.code-frame__content {
+		@apply min-w-0;
+	}
+
+	.code-frame__content :global(pre),
+	.code-frame__content :global(.astro-code) {
+		margin: 0;
+	}
+
+	.code-frame__content :global(.astro-code) {
+		width: 100%;
+		max-width: 100%;
+		overflow-x: auto;
+		border: 0;
+		background: transparent !important;
+		padding: 1rem;
+		font-size: 0.875rem;
+		line-height: 1.5;
+	}
+</style>

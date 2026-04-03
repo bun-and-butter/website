@@ -1,0 +1,49 @@
+---
+interface WhyItem {
+	title: string;
+	description: string;
+}
+
+interface Props {
+	items: WhyItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div id="why" class="scroll-mt-12 sm:scroll-mt-12"></div>
+
+<section class="container-shell section-space">
+	<div class="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+		<div class="space-y-5">
+			<div class="eyebrow">Why Bun & Butter exists</div>
+			<h2
+				class="max-w-xl font-heading text-3xl text-text sm:text-4xl"
+			>
+				We got tired of copying the same good defaults into every new
+				project.
+			</h2>
+			<p class="max-w-xl text-base leading-7 text-text-muted">
+				At work and in personal projects, the same small building blocks
+				kept showing up again. Bun & Butter is where we turn those
+				repeated bits into catalog entries we can actually reuse, document, and
+				keep in shape.
+			</p>
+		</div>
+
+		<div class="grid gap-4">
+				{
+					items.map((item) => (
+						<div class="glass-panel-subtle p-6">
+							<h3 class="font-heading text-2xl text-text">
+								{item.title}
+							</h3>
+						<p class="mt-3 max-w-2xl text-base leading-7 text-text-muted">
+							{item.description}
+						</p>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>

@@ -1,0 +1,19 @@
+{
+	"editor.defaultFormatter": "biomejs.biome",
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.removeUnusedImports": "explicit",
+		"source.organizeImports.biome": "explicit",
+		"source.fixAll.biome": "explicit",
+		"source.fixAll.markdownlint": "explicit"
+	},
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"json.schemas": [
+		{
+			"fileMatch": ["/src/data/packages/**"],
+			"url": "./.astro/collections/packages.schema.json"
+		}
+	]
+}

@@ -1,0 +1,107 @@
+---
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
+import { type ImageMetadata } from "astro";
+import CatalogHero from "../../components/catalog/catalog-hero.astro";
+import ExamplesSection from "../../components/catalog/examples-section.astro";
+import InstallSection from "../../components/catalog/install-section.astro";
+import ReadmeSection from "../../components/catalog/readme-section.astro";
+import Layout from "../../layouts/layout.astro";
+import { getExampleAnchorId, parseRepose } from "../../lib/repos";
+
+export async function getStaticPaths() {
+	const repos = parseRepose();
+
+	return repos.map((repo) => ({
+		params: { id: repo.id },
+	}));
+}
+
+const { id } = Astro.params;
+if (!id) {
+	throw new Error("Missing catalog id");
+}
+
+const repos = parseRepose();
+const repo = repos.find((r) => r.id === id);
+if (!repo) {
+	throw new Error("Missing repo");
+}
+
+const logoFiles = import.meta.glob<ImageMetadata>(
+	"../../../repos/*/doc/logo.webp",
+	{
+		eager: true,
+		import: "default",
+	},
+);
+
+const pageTitle = `@bun-and-butter/${repo.id} | Bun & Butter`;
+const pageDescription = `Catalog entry overview, install instructions, repository docs, and examples for @bun-and-butter/${repo.id}.`;
+
+const logo = logoFiles[`../../../repos/${id}/doc/logo.webp`];
+if (!logo) {
+	throw new Error(`Missing logo asset for ${id}`);
+}
+
+const markdownProcessor = await createMarkdownProcessor();
+const readmeResult = await markdownProcessor.render(repo.readme);
+const examples = repo.examples.map((example) => {
+	const relativePath = example.path.split("/examples/")[1];
+
+	return {
+		...example,
+		anchorId: getExampleAnchorId(relativePath ?? example.path),
+		displayPath: relativePath ? `examples/${relativePath}` : example.path,
+	};
+});
+
+const installBaseCommand = `bun add git@github.com:bun-and-butter/${repo.id}.git`;
+const installWithTagCommand =
+	repo.tags.length > 0 ? `${installBaseCommand}#${repo.tags[0]}` : null;
+const displayTags = repo.tags.slice(0, 6).reverse();
+const installOptions = [
+	{
+		label: "Latest Stable",
+		command: installBaseCommand,
+		copyLabel: "Copy stable install command",
+	},
+	...(installWithTagCommand
+		? [
+				{
+					label: "Fixed tag",
+					command: installWithTagCommand,
+					copyLabel: "Copy install command pinned to latest tag",
+				},
+			]
+		: []),
+];
+---
+
+<Layout
+	title={pageTitle}
+	description={pageDescription}
+	seoImage={logo}
+	seoImageAlt={`${repo.id} repository logo`}
+>
+	<CatalogHero
+		repo={repo}
+		logo={logo}
+		displayTags={displayTags}
+		examplesCount={examples.length}
+	/>
+
+	<section class="container-shell min-w-0 pb-20 sm:pb-24">
+		<div class="grid min-w-0 gap-6">
+			<InstallSection
+				rootId={`install-${repo.id}`}
+				installOptions={installOptions}
+			/>
+			<ReadmeSection html={readmeResult.code} />
+			<ExamplesSection examples={examples} />
+
+			<div class="flex justify-center pt-4">
+				<a href="#top" class="chip-link"> Back to top </a>
+			</div>
+		</div>
+	</section>
+</Layout>

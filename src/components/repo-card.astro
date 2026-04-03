@@ -1,0 +1,49 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { Repo } from "../lib/repos";
+import GitHubButton from "./github-button.astro";
+
+interface Props {
+	repo: Repo;
+	logo: ImageMetadata;
+}
+
+const { repo, logo } = Astro.props;
+---
+
+<article class="glass-panel relative">
+	<a
+		href={`/catalog/${repo.id}`}
+		aria-label={`Open catalog details for ${repo.id}`}
+		class="absolute inset-0 z-10"></a>
+	<div class="glass-media aspect-video">
+		<Image
+			src={logo}
+			width={600}
+			alt={`${repo.id} catalog artwork`}
+			class="h-full w-full object-cover"
+		/>
+	</div>
+	<div class="p-6 sm:p-8">
+		{
+			repo.keywords && repo.keywords.length > 0 && (
+				<div class="flex flex-wrap gap-2">
+					{repo.keywords.slice(0, 3).map((keyword) => (
+						<div class="pill normal-case tracking-normal">
+							{keyword}
+						</div>
+					))}
+				</div>
+			)
+		}
+		<h3 class="mt-4 font-heading text-xl leading-tight text-text">
+			@bun-and-butter/{repo.id}
+		</h3>
+		<p class="mt-4 text-base leading-7 text-text-muted">
+			{repo.description}
+		</p>
+	</div>
+
+	<GitHubButton repoId={repo.id} variant="corner" />
+</article>

@@ -1,0 +1,41 @@
+---
+import type { ImageMetadata } from "astro";
+import type { Repo } from "../../lib/repos";
+import RepoCard from "../repo-card.astro";
+
+interface RepoCardData {
+	repo: Repo;
+	logo: ImageMetadata;
+}
+
+interface Props {
+	items: RepoCardData[];
+}
+
+const { items } = Astro.props;
+---
+
+<div id="catalog" class="scroll-mt-12 sm:scroll-mt-12"></div>
+
+<section class="container-shell section-space">
+	<div class="section-heading">
+		<div>
+			<div class="eyebrow">Growing catalog</div>
+			<h2
+				class="mt-4 max-w-2xl font-heading text-3xl text-text sm:text-4xl"
+			>
+				The fridge-door staples.
+			</h2>
+		</div>
+		<p class="max-w-2xl text-base leading-7 text-text-muted">
+			Bun & Butter starts small on purpose and grows one dependable
+			catalog entry at a time. The goal is a catalog of reusable standards
+			and helpers that stays generic, easy to adopt, and worth reaching
+			for in more than one codebase.
+		</p>
+	</div>
+
+	<div class="mt-10 grid gap-6 md:grid-cols-2">
+		{items.map((item) => <RepoCard repo={item.repo} logo={item.logo} />)}
+	</div>
+</section>

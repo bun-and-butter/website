@@ -1,0 +1,67 @@
+---
+import { Code } from "astro:components";
+import CodeFrame from "../code-frame.astro";
+
+interface Example {
+	path: string;
+	content: string;
+	displayPath: string;
+	anchorId?: string;
+}
+
+interface Props {
+	examples: Example[];
+}
+
+const { examples } = Astro.props;
+---
+
+{
+	examples.length > 0 && (
+		<>
+			<div id="examples-repo" class="scroll-mt-16 sm:scroll-mt-16" />
+
+			<section class="glass-panel p-6 sm:p-8 lg:p-10">
+				<div class="section-heading">
+					<div>
+						<div class="eyebrow">Usage Examples</div>
+						<h2 class="mt-4 font-heading text-3xl text-text sm:text-4xl">
+							Examples
+						</h2>
+					</div>
+				</div>
+
+				<div class="mt-8 grid min-w-0 gap-6">
+					{examples.map((example) => (
+						<CodeFrame
+							id={example.anchorId}
+							title={example.displayPath}
+							class="w-full scroll-mt-28 text-left"
+							contentClass="example-frame"
+						>
+							<Code
+								code={example.content}
+								lang="ts"
+								theme="github-dark"
+								class="example-code"
+							/>
+						</CodeFrame>
+					))}
+				</div>
+			</section>
+		</>
+	)
+}
+
+<style>
+	:global(.example-frame) {
+		background: rgb(39 46 55);
+		box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+	}
+
+	:global(.example-frame .astro-code) {
+		background: transparent !important;
+		padding: 1rem;
+		font-size: 0.875rem;
+	}
+</style>

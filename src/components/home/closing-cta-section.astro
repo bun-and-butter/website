@@ -1,0 +1,56 @@
+---
+import GitHubButton from "../github-button.astro";
+---
+
+<section class="container-shell pb-20 pt-6 sm:pb-24">
+	<div class="glass-panel relative px-6 py-10 sm:px-10 sm:py-12">
+		<div class="cta-orb cta-orb-left"></div>
+		<div class="cta-orb cta-orb-right"></div>
+
+		<div
+			class="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
+		>
+			<div class="max-w-2xl">
+				<div class="eyebrow">Ready to browse</div>
+				<h2 class="mt-4 font-heading text-3xl text-text sm:text-4xl">
+					Pick the pieces you need, and leave the rest in the pan.
+				</h2>
+				<p class="mt-4 text-base leading-7 text-text-muted">
+					Start with a catalog entry, inspect the repository, and pull
+					it into your next Bun project straight from Git. Bun &
+					Butter is meant to be useful without asking for a
+					framework-sized commitment.
+				</p>
+			</div>
+
+			<div class="flex flex-col gap-4 sm:flex-row">
+				<a href="#catalog" class="button-brand">
+					Catalog
+				</a>
+				<GitHubButton
+					href="https://github.com/bun-and-butter"
+					label="GitHub"
+					fullWidth={false}
+				/>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	@reference "../../styles/global.css";
+
+	.cta-orb {
+		@apply pointer-events-none absolute rounded-full blur-3xl;
+		background: rgb(255 196 80 / 0.18);
+	}
+
+	.cta-orb-left {
+		@apply -left-8 top-8 size-28;
+	}
+
+	.cta-orb-right {
+		@apply -right-8 bottom-6 size-36;
+		background: rgb(255 152 66 / 0.14);
+	}
+</style>

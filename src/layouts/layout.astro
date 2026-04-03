@@ -1,0 +1,102 @@
+---
+import type { ImageMetadata } from "astro";
+import { SEO } from "astro-seo";
+import siteLogo from "../assets/logo.webp";
+import Header from "../components/header.astro";
+import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+	seoImage?: ImageMetadata;
+	seoImageAlt?: string;
+	noindex?: boolean;
+}
+
+const {
+	title = "Bun & Butter",
+	description = "A growing Bun and TypeScript-only catalog for reusable standards and small helpers.",
+	seoImage = siteLogo,
+	seoImageAlt = "Bun & Butter logo",
+	noindex = false,
+} = Astro.props;
+
+const siteName = "Bun & Butter";
+const baseUrl = Astro.site ?? Astro.url;
+const canonicalUrl = new URL(
+	Astro.url.pathname + Astro.url.search,
+	baseUrl,
+).toString();
+const seoImageUrl = new URL(seoImage.src, baseUrl).toString();
+const seoImageMimeType =
+	seoImage.format === "jpg" ? "image/jpeg" : `image/${seoImage.format}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <SEO
+      title={title}
+      titleDefault={siteName}
+      description={description}
+      canonical={canonicalUrl}
+      noindex={noindex}
+      robotsExtras="max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+      removeTrailingSlashForRoot={true}
+      openGraph={{
+        basic: {
+          title,
+          type: "website",
+          image: seoImageUrl,
+          url: canonicalUrl,
+        },
+        optional: {
+          description,
+          locale: "en_US",
+          siteName,
+        },
+        image: {
+          alt: seoImageAlt,
+          type: seoImageMimeType,
+          width: seoImage.width,
+          height: seoImage.height,
+        },
+      }}
+      twitter={{
+        card: "summary_large_image",
+        title,
+        description,
+        image: seoImageUrl,
+        imageAlt: seoImageAlt,
+      }}
+      extend={{
+        meta: [
+          { name: "application-name", content: siteName },
+          { name: "theme-color", content: "#23180f" },
+        ],
+      }}
+    />
+  </head>
+  <body>
+    <div class="page-shell">
+      <Header />
+
+      <main>
+        <div id="top" class="scroll-mt-16 sm:scroll-mt-16"></div>
+
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

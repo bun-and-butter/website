@@ -1,0 +1,92 @@
+---
+import type { ImageMetadata } from "astro";
+import Hero from "../components/hero.astro";
+import CatalogSection from "../components/home/catalog-section.astro";
+import ClosingCtaSection from "../components/home/closing-cta-section.astro";
+import FeatureTrioSection from "../components/home/feature-trio-section.astro";
+import WhySection from "../components/home/why-section.astro";
+import Layout from "../layouts/layout.astro";
+import { parseRepose } from "../lib/repos";
+
+const repos = parseRepose().sort((a, b) => a.id.localeCompare(b.id));
+
+const logoFiles = import.meta.glob<ImageMetadata>(
+	"../../repos/*/doc/logo.webp",
+	{
+		eager: true,
+		import: "default",
+	},
+);
+
+const featureItems = [
+	{
+		label: "Runtime",
+		title: "Bun and TypeScript-only",
+		description:
+			"Everything in the collection is shaped for a Bun-native workflow without extra packaging layers or registry ceremony.",
+	},
+	{
+		label: "Use case",
+		title: "Small tools for repeated work",
+		description:
+			"We collect the helpers, defaults, and standards that keep earning a place in new projects instead of rewriting them again.",
+	},
+	{
+		label: "Approach",
+		title: "Readable code with few dependencies",
+		description:
+			"Everything in the catalog stays intentionally small, easy to inspect, and careful about pulling in more external code than it needs.",
+	},
+];
+
+const repoCards = repos.map((repo) => {
+	const logo = logoFiles[`../../repos/${repo.id}/doc/logo.webp`];
+
+	if (!logo) {
+		throw new Error(`Missing logo asset for ${repo.id}`);
+	}
+
+	return {
+		repo,
+		logo,
+	};
+});
+
+const whyItems = [
+	{
+		title: "Solve repeated work once",
+		description:
+			"If a helper or standard keeps showing up in new codebases, we would rather add it to the catalog once than keep pasting slightly different versions around.",
+	},
+	{
+		title: "Keep it small and legible",
+		description:
+			"Every catalog entry should stay readable. You can inspect the code, understand the tradeoffs, and adopt only the parts that belong in your project.",
+	},
+	{
+		title: "Use Git because it is pragmatic",
+		description:
+			"Bun & Butter is Bun and TypeScript-only, so Git is the simplest distribution path. The repository stays the source of truth and Bun can install directly from it.",
+	},
+];
+---
+
+<Layout
+	title="Bun & Butter | Bun and TypeScript catalog from Git"
+	description="A growing Bun and TypeScript-only catalog with practical standards, small helpers, and dependency-light building blocks."
+>
+	<Hero />
+	<FeatureTrioSection items={featureItems} />
+	<CatalogSection items={repoCards} />
+	<WhySection items={whyItems} />
+	<ClosingCtaSection />
+
+	<div class="container-shell flex justify-center pb-20 sm:pb-24">
+		<a
+			href="#top"
+			class="chip-link"
+		>
+			Back to top
+		</a>
+	</div>
+</Layout>

@@ -1,0 +1,87 @@
+---
+import { Image } from "astro:assets";
+import logoImg from "../assets/logo.webp";
+import CodeFrame from "./code-frame.astro";
+---
+
+<section class="container-shell pb-10 pt-12">
+  <div class="grid gap-12 lg:justify-center">
+    <div class="mx-auto w-full min-w-0 max-w-3xl text-center">
+      <div class="flex justify-center">
+        <Image
+          loading="eager"
+          width={600}
+          src={logoImg}
+          alt="Bun & Butter logo"
+          class="w-52 max-w-full rounded-3xl border border-white/8 bg-black/18 object-cover p-2 shadow-[0_0_30px_rgba(255,203,92,0.16)] sm:w-60 lg:w-72"
+        />
+      </div>
+
+      <h1
+        class="mx-auto mt-8 max-w-4xl text-3xl font-semibold leading-tight tracking-tight text-balance sm:text-5xl lg:text-7xl"
+      >
+        A catalog for the code
+        <span class="text-brand-400">that keeps coming back.</span>
+      </h1>
+
+      <p
+        class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-text-muted sm:text-xl"
+      >
+        We build Bun & Butter from the standards and small helpers we keep
+        reusing in codebases. Every catalog entry stays Bun and TypeScript-only,
+        dependency-light, and ready to install straight from Git.
+      </p>
+
+      <CodeFrame
+        title="main.ts"
+        class="mx-auto mt-8 max-w-2xl text-left"
+        contentClass="hero-code"
+      >
+        <pre
+          class="block w-full max-w-full overflow-x-auto px-4 pb-5 pt-2 text-sm leading-tight text-white/84"><code><span class="hero-line"><span class="hero-ln">1</span><span><span class="hero-token-keyword">import</span> &#123; <span class="hero-token-fn">addMoreButter</span> &#125; <span class="hero-token-keyword">from</span> <span class="hero-token-string">"@bun-and-butter"</span>;</span></span>
+<span class="hero-line"><span class="hero-ln">2</span><span /></span>
+<span class="hero-line"><span class="hero-ln">3</span><span><span class="hero-token-keyword">const</span> awesomeProject = <span class="hero-token-fn">addMoreButter</span>(<span class="hero-token-string">"super productive"</span>);</span></span>
+<span class="hero-line"><span class="hero-ln">4</span><span><span class="hero-token-fn">run</span>(awesomeProject);</span></span></code></pre>
+      </CodeFrame>
+
+      <div
+        class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+      >
+        <a href="#catalog" class="button-brand w-full sm:w-auto"
+          >Browse the catalog</a
+        >
+        <a href="#why" class="button-muted w-full sm:w-auto"
+          >Why Bun & Butter</a
+        >
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @reference "../styles/global.css";
+
+  .hero-code {
+    @apply text-white/84;
+  }
+
+  .hero-line {
+    @apply min-w-max flex gap-2;
+  }
+
+  .hero-ln {
+    @apply w-6 shrink-0 text-right text-white/28;
+  }
+
+  .hero-token-keyword {
+    color: rgb(255 210 120 / 0.96);
+  }
+
+  .hero-token-string {
+    color: rgb(255 243 196 / 0.92);
+  }
+
+  .hero-token-fn {
+    color: rgb(255 176 79 / 0.96);
+  }
+</style>

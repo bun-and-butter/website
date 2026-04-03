@@ -1,0 +1,160 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { Repo } from "../../lib/repos";
+import GithubButton from "../github-button.astro";
+
+interface Props {
+	repo: Repo;
+	logo: ImageMetadata;
+	displayTags: string[];
+	examplesCount: number;
+}
+
+const { repo, logo, displayTags, examplesCount } = Astro.props;
+
+const navLinkClass =
+	"inline-flex items-center rounded-full border border-white/10 bg-black/18 px-4 py-2 text-sm font-medium text-text-muted transition hover:border-brand-300/30 hover:bg-black/24 hover:text-text";
+---
+
+<section id="top" class="container-shell min-w-0 pb-10 pt-12 sm:pb-12 sm:pt-16">
+	<div
+		class="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,20rem)] lg:items-start"
+	>
+		<div class="min-w-0">
+			<a
+				href="/#catalog"
+				class="inline-flex items-center gap-2 text-sm font-medium text-text-muted hover:text-text"
+			>
+				<span aria-hidden="true">←</span>
+				Back to catalog
+			</a>
+
+			<h1
+				class="mt-6 wrap-break-word font-heading text-3xl leading-tight text-text sm:text-4xl lg:text-4xl"
+			>
+				@bun-and-butter/{repo.id}
+			</h1>
+
+			<p
+				class="mt-2 max-w-3xl text-lg leading-8 text-text-muted wrap-anywhere sm:text-xl"
+			>
+				{
+					repo.description ??
+						"Repository-specific details will appear here as more metadata is added."
+				}
+			</p>
+			<p class="mt-4 max-w-3xl text-sm leading-6 text-text-muted">
+				This page stays intentionally generic. The actual catalog entry
+				story, usage, and examples come directly from the checked-out
+				repository.
+			</p>
+
+			<div class="mt-6 grid gap-3">
+				<div class="flex min-w-0 flex-wrap items-center gap-3">
+					<span
+						class="text-xs uppercase tracking-widest text-text-muted"
+					>
+						Latest revision
+					</span>
+					{
+						repo.latestCommit ? (
+							<div class="pill break-all normal-case tracking-normal">
+								{repo.latestCommit.shortHash} ·{" "}
+								{repo.latestCommit.date}
+							</div>
+						) : (
+							<span class="text-sm text-text-muted">
+								No revision available yet
+							</span>
+						)
+					}
+				</div>
+
+				<div class="flex min-w-0 flex-wrap items-center gap-3">
+					<span
+						class="text-xs uppercase tracking-widest text-text-muted"
+					>
+						Releases
+					</span>
+					{
+						displayTags.length > 0 ? (
+							displayTags.map((tag) => (
+								<div class="pill break-all normal-case tracking-normal">
+									{tag}
+								</div>
+							))
+						) : (
+							<span class="text-sm text-text-muted">
+								No releases tagged yet
+							</span>
+						)
+					}
+				</div>
+			</div>
+
+			<div class="mt-6 grid gap-3">
+				<span class="text-xs uppercase tracking-widest text-text-muted">
+					On this page
+				</span>
+				<nav class="flex min-w-0 flex-wrap gap-2">
+					<a href="#install" class={navLinkClass}>Install</a>
+					<a href="#readme" class={navLinkClass}>README</a>
+					{
+						examplesCount > 0 && (
+							<a href="#examples-repo" class={navLinkClass}>
+								Examples
+							</a>
+						)
+					}
+				</nav>
+			</div>
+
+			<div class="mx-auto mt-8 w-full max-w-md lg:hidden">
+				<div
+					class="min-w-0 overflow-hidden rounded-3xl border border-white/8 bg-black/28 backdrop-blur-xl"
+					style="box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 -1px 0 rgb(255 255 255 / 0.02), 0 24px 80px rgb(0 0 0 / 0.24);"
+				>
+					<div
+						class="overflow-hidden border-b border-border/70 bg-surface-2"
+					>
+						<Image
+							loading="eager"
+							width={600}
+							src={logo}
+							alt={`${repo.id} logo`}
+							class="h-full w-full object-cover"
+						/>
+					</div>
+
+					<div class="p-6">
+						<GithubButton repoId={repo.id} variant="full" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<aside class="hidden gap-4 self-start lg:sticky lg:top-24 lg:grid">
+			<div
+				class="min-w-0 overflow-hidden rounded-3xl border border-white/8 bg-black/28 backdrop-blur-xl"
+				style="box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 -1px 0 rgb(255 255 255 / 0.02), 0 24px 80px rgb(0 0 0 / 0.24);"
+			>
+				<div
+					class="overflow-hidden border-b border-border/70 bg-surface-2"
+				>
+					<Image
+						loading="eager"
+						width={600}
+						src={logo}
+						alt={`${repo.id} logo`}
+						class="h-full w-full object-cover"
+					/>
+				</div>
+
+				<div class="p-6 sm:p-8">
+					<GithubButton repoId={repo.id} variant="full" />
+				</div>
+			</div>
+		</aside>
+	</div>
+</section>

@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@font-face {
+	font-family: "Avenir Next Local";
+	src: url("../assets/fonts/AvenirNext.ttc") format("truetype-collection");
+	font-style: normal;
+	font-weight: 400 700;
+	font-display: swap;
+}
+
+@theme {
+	/* Brand */
+	--color-brand-50: oklch(0.98 0.02 95);
+	--color-brand-100: oklch(0.95 0.04 95);
+	--color-brand-200: oklch(0.91 0.07 92);
+	--color-brand-300: oklch(0.86 0.11 88);
+	--color-brand-400: oklch(0.8 0.14 82);
+	--color-brand-500: oklch(0.72 0.15 74);
+	--color-brand-600: oklch(0.63 0.13 68);
+
+	/* Surfaces */
+	--color-bg: oklch(0.16 0.01 95);
+	--color-surface: oklch(0.2 0.01 95);
+	--color-surface-2: oklch(0.24 0.01 95);
+	--color-border: oklch(0.3 0.01 95);
+
+	/* Text */
+	--color-text: oklch(0.96 0.01 95);
+	--color-text-muted: oklch(0.72 0.01 95);
+
+	/* Typography */
+	--font-sans:
+		"Avenir Next Local", Avenir, ui-sans-serif, system-ui, sans-serif;
+	--font-heading:
+		"Avenir Next Local", Avenir, ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+	:root {
+		color-scheme: dark;
+	}
+
+	html {
+		@apply bg-bg text-text antialiased;
+	}
+
+	body {
+		@apply min-h-screen overflow-x-hidden bg-bg text-text;
+	}
+
+	main {
+		@apply relative overflow-x-hidden;
+	}
+
+	a {
+		@apply text-brand-400 transition-colors;
+	}
+
+	a:hover {
+		@apply text-brand-300;
+	}
+
+	::selection {
+		@apply bg-brand-400/30;
+	}
+}
+
+@layer components {
+	.page-shell {
+		@apply relative min-h-screen bg-bg;
+		background-image:
+			radial-gradient(
+				ellipse 90% 72% at 38% 26%,
+				rgb(255 187 69 / 0.18),
+				transparent 58%
+			),
+			linear-gradient(
+				135deg,
+				rgb(62 41 15 / 0.52),
+				rgb(29 21 13 / 0.78) 72%,
+				rgb(22 16 11 / 0.86)
+			);
+		background-attachment: scroll;
+	}
+
+	.container-shell {
+		@apply mx-auto max-w-6xl px-6 lg:px-8;
+	}
+
+	.section-space {
+		@apply py-6 sm:py-10 lg:py-12;
+	}
+
+	.section-heading {
+		@apply flex flex-col gap-4;
+	}
+
+	.section-heading > * {
+		min-width: 0;
+	}
+
+	.eyebrow {
+		@apply inline-flex w-fit items-center rounded-full border border-brand-400/25 bg-brand-400/10 px-3 py-1 text-xs font-medium uppercase tracking-widest text-brand-300;
+	}
+
+	.pill {
+		@apply inline-flex w-fit items-center rounded-full border border-border/70 bg-surface-2 px-3 py-1 text-xs uppercase tracking-widest text-text-muted;
+	}
+
+	.glass-panel {
+		@apply min-w-0 overflow-hidden rounded-3xl border border-white/8 bg-black/28 backdrop-blur-xl;
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.08),
+			inset 0 -1px 0 rgb(255 255 255 / 0.02),
+			0 24px 80px rgb(0 0 0 / 0.24);
+	}
+
+	.glass-panel-soft {
+		@apply rounded-3xl border border-white/8 bg-black/24 backdrop-blur-xl;
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.08),
+			inset 0 -1px 0 rgb(255 255 255 / 0.02),
+			0 20px 60px rgb(0 0 0 / 0.22);
+	}
+
+	.glass-panel-subtle {
+		@apply rounded-3xl border border-white/7 bg-black/22 backdrop-blur-lg;
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.06),
+			inset 0 -1px 0 rgb(255 255 255 / 0.015),
+			0 18px 48px rgb(0 0 0 / 0.18);
+	}
+
+	.glass-media {
+		@apply overflow-hidden border-b border-border/70 bg-surface-2;
+	}
+
+	.chip-link {
+		@apply inline-flex items-center rounded-full border border-white/10 bg-black/18 px-4 py-2 text-sm font-medium text-text-muted transition hover:border-brand-300/30 hover:bg-black/24 hover:text-text;
+	}
+
+	.button-brand {
+		@apply inline-flex items-center justify-center rounded-xl border border-brand-200/45 bg-brand-400 px-4 py-2 font-medium text-black transition hover:bg-brand-300;
+		box-shadow:
+			inset 0 1px 0 rgb(255 248 220 / 0.24),
+			0 10px 24px rgb(0 0 0 / 0.14);
+	}
+
+	.button-muted {
+		@apply inline-flex items-center justify-center rounded-xl border border-white/10 bg-black/28 px-4 py-2 font-medium text-text transition hover:bg-black/34;
+		box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+	}
+}

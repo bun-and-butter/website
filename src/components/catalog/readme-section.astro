@@ -1,0 +1,119 @@
+---
+interface Props {
+	html: string;
+}
+
+const { html } = Astro.props;
+---
+
+<div id="readme" class="scroll-mt-16 sm:scroll-mt-16"></div>
+
+<section class="glass-panel p-6 sm:p-8 lg:p-10">
+	<div class="section-heading">
+		<div>
+			<div class="eyebrow">Documentation</div>
+			<h2 class="mt-4 font-heading text-3xl text-text sm:text-4xl">
+				README.md
+			</h2>
+		</div>
+	</div>
+
+	<div class="catalog-readme-prose mt-8 min-w-0" set:html={html} />
+</section>
+
+<style is:global>
+	.catalog-readme-prose {
+		min-width: 0;
+		max-width: 100%;
+	}
+
+	.catalog-readme-prose,
+	.catalog-readme-prose p,
+	.catalog-readme-prose li,
+	.catalog-readme-prose a {
+		overflow-wrap: anywhere;
+	}
+
+	.catalog-readme-prose {
+		color: var(--color-text-muted);
+		font-size: 1rem;
+		line-height: 2rem;
+	}
+
+	.catalog-readme-prose h2 {
+		margin-top: 2.5rem;
+		color: var(--color-text);
+		font-family: var(--font-heading);
+		font-size: 1.5rem;
+		line-height: 1.25;
+	}
+
+	.catalog-readme-prose h2:first-child {
+		margin-top: 0;
+	}
+
+	.catalog-readme-prose h3 {
+		margin-top: 2rem;
+		color: var(--color-text);
+		font-family: var(--font-heading);
+		font-size: 1.25rem;
+		line-height: 1.25;
+	}
+
+	.catalog-readme-prose p {
+		margin-top: 1rem;
+	}
+
+	.catalog-readme-prose ul {
+		margin-top: 1.25rem;
+		list-style: none;
+		padding-left: 0;
+	}
+
+	.catalog-readme-prose li {
+		position: relative;
+		margin-top: 0.75rem;
+		padding-left: 1.75rem;
+	}
+
+	.catalog-readme-prose li::before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0.9em;
+		height: 0.5rem;
+		width: 0.5rem;
+		transform: translateY(-50%);
+		border-radius: 9999px;
+		background: rgb(255 193 70 / 0.8);
+		box-shadow: 0 0 0 4px rgb(255 193 70 / 0.08);
+	}
+
+	.catalog-readme-prose code {
+		border-radius: 0.375rem;
+		background: rgb(255 255 255 / 0.06);
+		padding: 0.125rem 0.375rem;
+		color: var(--color-brand-200);
+		font-size: 0.875rem;
+	}
+
+	.catalog-readme-prose pre {
+		margin-top: 1.5rem;
+		overflow-x: auto;
+		max-width: 100%;
+		border: 1px solid rgb(255 255 255 / 0.08);
+		border-radius: 1rem;
+		background: rgb(0 0 0 / 0.28);
+		padding: 1rem;
+		color: rgb(255 255 255 / 0.88);
+		font-size: 0.875rem;
+		line-height: 1.75rem;
+		box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05);
+	}
+
+	.catalog-readme-prose pre code {
+		background: transparent;
+		padding: 0;
+		color: inherit;
+	}
+</style>
