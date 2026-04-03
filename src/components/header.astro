@@ -1,15 +1,37 @@
 ---
+const githubMarkPath =
+	"M12 .5a11.5 11.5 0 0 0-3.637 22.41c.575.106.785-.25.785-.554 0-.274-.01-1-.015-1.963-3.192.694-3.867-1.538-3.867-1.538-.523-1.327-1.277-1.68-1.277-1.68-1.044-.714.08-.7.08-.7 1.154.081 1.761 1.185 1.761 1.185 1.026 1.758 2.692 1.25 3.348.956.104-.744.402-1.25.731-1.538-2.548-.29-5.226-1.274-5.226-5.67 0-1.252.448-2.277 1.183-3.079-.119-.29-.513-1.46.112-3.045 0 0 .964-.309 3.16 1.176a10.97 10.97 0 0 1 5.753 0c2.194-1.485 3.157-1.176 3.157-1.176.627 1.585.233 2.755.114 3.045.737.802 1.182 1.827 1.182 3.08 0 4.406-2.682 5.376-5.238 5.662.413.356.781 1.058.781 2.133 0 1.54-.014 2.78-.014 3.158 0 .307.207.665.79.552A11.5 11.5 0 0 0 12 .5Z";
 ---
 
 <header
   class="sticky top-0 z-30 overflow-hidden border-b border-border/70 bg-bg/80 backdrop-blur-xl"
 >
-  <div class="container-shell flex min-h-18 items-center justify-center py-4">
+  <div class="container-shell grid min-h-18 grid-cols-[auto_1fr] items-center gap-4 py-4 md:grid-cols-[1fr_auto_1fr]">
+    <div class="hidden md:block" aria-hidden="true"></div>
+
     <nav
       class="flex max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-text-muted sm:gap-x-6 sm:text-base md:gap-8 md:text-sm"
     >
       <a href="/#catalog" class="hover:text-text">Catalog</a>
       <a href="/#why" class="hover:text-text">Why</a>
     </nav>
+
+    <a
+      href="https://github.com/bun-and-butter"
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Open the Bun & Butter GitHub organization"
+      class="justify-self-end text-text-muted transition hover:text-text"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        class="size-6"
+        aria-hidden="true"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d={githubMarkPath} />
+      </svg>
+    </a>
   </div>
 </header>
