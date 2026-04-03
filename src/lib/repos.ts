@@ -42,6 +42,12 @@ const git = (repoPath: string, args: string[]) => {
 // compiled chunk location under dist/.
 const repoBasePath = resolve(process.cwd(), "repos");
 
+const stripSecondLevelSection = (content: string, heading: string) =>
+	content.replace(
+		new RegExp(`^##\\s+${heading}\\s*$[\\s\\S]*?(?=^##\\s+|^#\\s+|\\Z)`, "gim"),
+		"",
+	);
+
 export const getExampleAnchorId = (filepath: string) => {
 	const normalizedPath = filepath.replaceAll("\\", "/");
 	const slug = slugify(normalizedPath) || "file";
@@ -54,14 +60,17 @@ export const getExampleAnchorId = (filepath: string) => {
 };
 
 const cleanReadme = (content: string) => {
-	return content
-		.replace(/^# .+\n+/m, "")
-		.replace(/^<img\s+src="doc\/logo\.webp"[^>]*>\n*/m, "")
-		.replaceAll(
-			/\]\((?:\.\/)?examples\/([^)]+)\)/g,
-			(_, filepath: string) => `](#${getExampleAnchorId(filepath)})`,
-		)
-		.trim();
+	return stripSecondLevelSection(
+		content
+			.replace(/^# .+\n+/m, "")
+			.replace(/^<img\s+src="doc\/logo\.webp"[^>]*>\n*/m, "")
+			.replaceAll(
+				/\]\((?:\.\/)?examples\/([^)]+)\)/g,
+				(_, filepath: string) => `](#${getExampleAnchorId(filepath)})`,
+			)
+			.trim(),
+		"Installation",
+	).trim();
 };
 
 function parseRepo(id: string): Repo {

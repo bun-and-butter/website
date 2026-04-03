@@ -1,16 +1,11 @@
 ---
-interface InstallOption {
-	label: string;
+interface Props {
+	rootId: string;
 	command: string;
 	copyLabel: string;
 }
 
-interface Props {
-	rootId: string;
-	installOptions: InstallOption[];
-}
-
-const { rootId, installOptions } = Astro.props;
+const { rootId, command, copyLabel } = Astro.props;
 ---
 
 <div id="install" class="scroll-mt-16 sm:scroll-mt-16"></div>
@@ -24,12 +19,9 @@ const { rootId, installOptions } = Astro.props;
 			</h2>
 		</div>
 		<p class="text-base leading-7 text-text-muted wrap-anywhere">
-			Bun & Butter catalog entries are consumed directly from GitHub over
-			the repository SSH URL. Because the collection is Bun and
-			TypeScript-only, the repository stays the source of truth and Bun
-			can install from it without a registry step. Install from the
-			repository's default branch, or pin a tag when you need a
-			reproducible install. See the{" "}
+			Bun & Butter packages are installed directly from the GitHub
+			repository over SSH. This is the recommended install path for the
+			current version. See the{" "}
 			<a
 				href="https://bun.com/docs/pm/cli/add#git-dependencies"
 				target="_blank"
@@ -42,51 +34,44 @@ const { rootId, installOptions } = Astro.props;
 	</div>
 
 	<div class="mt-8 grid min-w-0 gap-4">
-		{
-			installOptions.map((option) => (
-				<div class="install-card">
-					<p class="text-xs uppercase tracking-widest text-text-muted">
-						{option.label}
-					</p>
-					<div class="install-command-row mt-3">
-						<pre class="install-command">
-							<code>{option.command}</code>
-						</pre>
-						<button
-							type="button"
-							class="copy-button"
-							data-copy-text={option.command}
-							aria-label={option.copyLabel}
-						>
-							<svg
-								viewBox="0 0 24 24"
-								class="size-4"
-								aria-hidden="true"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<rect
-									x="9"
-									y="9"
-									width="10"
-									height="10"
-									rx="2"
-									stroke="currentColor"
-									stroke-width="1.8"
-								/>
-								<path
-									d="M6 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"
-									stroke="currentColor"
-									stroke-width="1.8"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								/>
-							</svg>
-						</button>
-					</div>
-				</div>
-			))
-		}
+		<div class="install-card">
+			<div class="install-command-row">
+				<pre class="install-command">
+					<code>{command}</code>
+				</pre>
+				<button
+					type="button"
+					class="copy-button"
+					data-copy-text={command}
+					aria-label={copyLabel}
+				>
+					<svg
+						viewBox="0 0 24 24"
+						class="size-4"
+						aria-hidden="true"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<rect
+							x="9"
+							y="9"
+							width="10"
+							height="10"
+							rx="2"
+							stroke="currentColor"
+							stroke-width="1.8"
+						/>
+						<path
+							d="M6 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"
+							stroke="currentColor"
+							stroke-width="1.8"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+					</svg>
+				</button>
+			</div>
+		</div>
 	</div>
 </section>
 

@@ -55,26 +55,8 @@ const examples = repo.examples.map((example) => {
 	};
 });
 
-const installBaseCommand = `bun add git@github.com:bun-and-butter/${repo.id}.git`;
-const installWithTagCommand =
-	repo.tags.length > 0 ? `${installBaseCommand}#${repo.tags[0]}` : null;
+const installCommand = `bun add git@github.com:bun-and-butter/${repo.id}.git`;
 const displayTags = repo.tags.slice(0, 6).reverse();
-const installOptions = [
-	{
-		label: "Latest Stable",
-		command: installBaseCommand,
-		copyLabel: "Copy stable install command",
-	},
-	...(installWithTagCommand
-		? [
-				{
-					label: "Fixed tag",
-					command: installWithTagCommand,
-					copyLabel: "Copy install command pinned to latest tag",
-				},
-			]
-		: []),
-];
 ---
 
 <Layout
@@ -94,7 +76,8 @@ const installOptions = [
 		<div class="grid min-w-0 gap-6">
 			<InstallSection
 				rootId={`install-${repo.id}`}
-				installOptions={installOptions}
+				command={installCommand}
+				copyLabel="Copy install command"
 			/>
 			<ReadmeSection html={readmeResult.code} />
 			<ExamplesSection examples={examples} />
