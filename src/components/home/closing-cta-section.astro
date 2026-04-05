@@ -7,25 +7,30 @@ import GitHubButton from "../github-button.astro";
 		<div class="cta-orb cta-orb-left"></div>
 		<div class="cta-orb cta-orb-right"></div>
 
-		<div
-			class="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
-		>
-			<div class="max-w-2xl">
+		<div class="relative flex flex-col gap-8">
+			<div>
 				<div class="eyebrow">Ready to browse</div>
 				<h2 class="mt-4 font-heading text-3xl text-text sm:text-4xl">
 					Pick the pieces you need, and leave the rest in the pan.
 				</h2>
 				<p class="mt-4 text-base leading-7 text-text-muted">
-					Start with a catalog entry, inspect the repository, and pull
-					it into your next Bun project straight from Git. Bun &
-					Butter is meant to be useful without asking for a
-					framework-sized commitment.
+					Start with the catalog when you want reusable code. Start
+					with patterns when you want a reusable idea. Snippets are for
+					the small ready-to-paste pieces in between. Bun & Butter is
+					built so you can take exactly what helps and leave the rest
+					behind.
 				</p>
 			</div>
 
-			<div class="flex flex-col gap-4 sm:flex-row">
+			<div class="flex flex-wrap items-center justify-center gap-4">
 				<a href="#catalog" class="button-brand">
 					Catalog
+				</a>
+				<a href="#patterns" class="button-muted cta-patterns-link">
+					Patterns
+				</a>
+				<a href="#snippets" class="button-muted cta-snippets-link">
+					Snippets
 				</a>
 				<GitHubButton
 					href="https://github.com/bun-and-butter"
@@ -52,5 +57,33 @@ import GitHubButton from "../github-button.astro";
 	.cta-orb-right {
 		@apply -right-8 bottom-6 size-36;
 		background: rgb(255 152 66 / 0.14);
+	}
+
+	.cta-patterns-link {
+		border-color: rgb(255 255 255 / 0.12) !important;
+		background: rgb(255 255 255 / 0.05) !important;
+	}
+
+	.cta-patterns-link:hover {
+		border-color: rgb(255 196 80 / 0.42) !important;
+		background: rgb(255 196 80 / 0.16) !important;
+		color: rgb(255 248 220 / 0.98) !important;
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.08),
+			0 12px 28px rgb(0 0 0 / 0.16);
+	}
+
+	.cta-snippets-link {
+		border-color: rgb(255 255 255 / 0.12) !important;
+		background: rgb(255 255 255 / 0.04) !important;
+	}
+
+	.cta-snippets-link:hover {
+		border-color: rgb(255 255 255 / 0.24) !important;
+		background: rgb(255 255 255 / 0.1) !important;
+		color: rgb(255 255 255 / 0.96) !important;
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.08),
+			0 12px 28px rgb(0 0 0 / 0.14);
 	}
 </style>

@@ -1,0 +1,497 @@
+---
+import { Code } from "astro:components";
+import CodeFrame from "../../components/code-frame.astro";
+import Layout from "../../layouts/layout.astro";
+
+const patternCodeRootId = "pattern-code-a-better-enum-alternative";
+const code = `/**
+ * Run \`PRAGMA optimize;\` when closing the connection.
+ */
+export interface OptimizeOnExit {
+	/**
+	 * Good for short-lived processes like scripts, import jobs, or one-off tools.
+	 */
+	kind: "on-close";
+}
+
+/**
+ * Run \`PRAGMA optimize=0x10002;\` on connect and \`PRAGMA optimize;\` periodically.
+ */
+export interface OptimizePeriodically {
+	/**
+	 * Good for long-running processes like servers and workers.
+	 */
+	kind: "periodically";
+	/**
+	 * Interval in milliseconds.
+	 */
+	interval: number;
+}
+
+export type Optimize = OptimizeOnExit | OptimizePeriodically;
+
+/**
+ * Controls how \`PRAGMA optimize\` is scheduled.
+ *
+ * Use \`Optimize.OnExit\` for short-lived processes and
+ * \`Optimize.Periodically(interval)\` for long-running ones.
+ *
+ * @see {@link https://sqlite.org/pragma.html#pragma_optimize | SQLite Docs}
+ */
+export const Optimize = {
+	/**
+	 * Run \`PRAGMA optimize;\` when closing the connection.
+	 */
+	OnExit: { kind: "on-close" } satisfies OptimizeOnExit,
+	/**
+	 * Run \`PRAGMA optimize=0x10002;\` on connect and \`PRAGMA optimize;\` periodically.
+	 */
+	Periodically: (interval: number): OptimizePeriodically => ({
+		kind: "periodically",
+		interval,
+	}),
+};`;
+const exampleCode = `import { buildSQLite, Optimize } from "@bun-and-butter/sqlite";
+
+const shortLivedSQLite = await buildSQLite({
+	optimize: Optimize.OnExit, // fixed variant
+});
+
+const longRunningSQLite = await buildSQLite({
+	optimize: Optimize.Periodically(60 * 60 * 1000), // parameterized variant
+});`;
+---
+
+<Layout
+	title="A Better Enum Alternative | Bun & Butter"
+	description="A beginner-friendly explanation of the optimize mode API from @bun-and-butter/sqlite and why a plain enum cannot model Optimize.Periodically(interval) well."
+>
+	<section class="container-shell min-w-0 pb-20 pt-12 sm:pb-24">
+		<div class="pattern-page mx-auto max-w-3xl min-w-0">
+			<a href="/#patterns" class="chip-link">Back to patterns</a>
+
+			<div class="mt-8">
+				<div class="eyebrow">
+					Enum ergonomics without enum limitations
+				</div>
+				<h1
+					class="mt-5 font-heading text-4xl leading-tight text-text sm:text-5xl"
+				>
+					A Better Enum Alternative
+				</h1>
+				<p class="mt-6 max-w-2xl text-lg leading-8 text-text-muted">
+					This pattern gives you the readability and confidence people
+					usually want from enums, but with enough flexibility for
+					richer variants. A good real-world example is the optimize
+					configuration in
+					<a href="/catalog/sqlite"
+						><code>@bun-and-butter/sqlite</code></a
+					>:
+					<code>Optimize.OnExit</code> is a fixed option, while
+					<code>Optimize.Periodically(60 * 60 * 1000)</code> also carries
+					a value. That is exactly where a normal enum starts to break down.
+				</p>
+			</div>
+
+			<CodeFrame
+				id={patternCodeRootId}
+				title="sqlite.ts"
+				class="mt-10"
+				contentClass="pattern-frame"
+			>
+				<div class="pattern-code-wrap">
+					<button
+						type="button"
+						class="pattern-copy-button"
+						aria-label="Copy source code"
+						data-pattern-copy-button
+						data-pattern-copy-code={code}
+					>
+						<svg
+							viewBox="0 0 24 24"
+							class="size-4"
+							aria-hidden="true"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<rect
+								x="9"
+								y="9"
+								width="10"
+								height="10"
+								rx="2"
+								stroke="currentColor"
+								stroke-width="1.8"></rect>
+							<path
+								d="M6 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"
+								stroke="currentColor"
+								stroke-width="1.8"
+								stroke-linecap="round"
+								stroke-linejoin="round"></path>
+						</svg>
+						<span class="pattern-copy-button__label">Copy</span>
+					</button>
+					<Code
+						code={code}
+						lang="ts"
+						theme="github-dark"
+						class="pattern-code"
+					/>
+				</div>
+			</CodeFrame>
+
+			<div class="mt-10 grid min-w-0 gap-6">
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<h2 class="font-heading text-2xl text-text">
+						When to reach for this pattern
+					</h2>
+					<div
+						class="mt-4 grid gap-4 text-base leading-7 text-text-muted"
+					>
+						<p>
+							Use it when your API starts enum-like, but one or
+							more variants need payload. This comes up in job
+							scheduling, retry policies, caching strategies,
+							connection modes, and UI state transitions.
+						</p>
+						<p>
+							If one variant is just a label and another variant
+							needs arguments, you are usually no longer designing
+							a plain enum. The optimize setting in
+							<a href="/catalog/sqlite"
+								><code>@bun-and-butter/sqlite</code></a
+							>
+							is one concrete example: one mode is constant, one mode
+							is parameterized, and both still belong to the same small
+							conceptual family. That is where discriminated unions
+							shine.
+						</p>
+					</div>
+				</article>
+
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<h2 class="font-heading text-2xl text-text">Example</h2>
+					<p class="mt-4 text-base leading-7 text-text-muted">
+						Here is the same idea in use with
+						<a href="/catalog/sqlite"><code>@bun-and-butter/sqlite</code></a>.
+						One configuration uses the fixed variant, the other uses the
+						parameterized one.
+					</p>
+
+					<CodeFrame title="demo.ts" class="mt-6" contentClass="pattern-frame">
+						<Code
+							code={exampleCode}
+							lang="ts"
+							theme="github-dark"
+						/>
+					</CodeFrame>
+				</article>
+
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<h2 class="font-heading text-2xl text-text">TLDR;</h2>
+					<div
+						class="mt-4 grid gap-4 text-base leading-7 text-text-muted"
+					>
+						<p>
+							Use a discriminated union to describe the valid
+							shapes, then add a small companion object so the
+							runtime API still feels almost as convenient as enum
+							members.
+						</p>
+						<p>
+							If you are newer to TypeScript, you can read that
+							as: first define the valid object forms, then offer
+							friendly helpers so nobody has to remember the exact
+							object structure by hand.
+						</p>
+					</div>
+				</article>
+
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<section>
+						<h2 class="font-heading text-2xl text-text">
+							Why a normal enum would not be enough
+						</h2>
+						<div
+							class="mt-4 grid gap-4 text-base leading-7 text-text-muted"
+						>
+							<p>
+								A normal enum is good when every variant is only
+								a named value. Every member stands alone, like <code
+									>Red</code
+								>,
+								<code>Green</code>, and <code>Blue</code>.
+							</p>
+							<p>
+								That is not what happens in this pattern. One
+								variant might be a single fixed mode, but
+								another variant also needs additional data. In
+								the
+								<a href="/catalog/sqlite"
+									><code>@bun-and-butter/sqlite</code></a
+								>
+								example,
+								<code
+									>Optimize.Periodically(60 * 60 * 1000)</code
+								> needs an interval in milliseconds. An enum can name
+								a mode like
+								<code>periodically</code>, but it cannot
+								naturally model
+								<code>Periodically(60 * 60 * 1000)</code> as a typed
+								value constructor.
+							</p>
+							<p>
+								You could try to split the information apart,
+								for example by using an enum plus some separate <code
+									>interval</code
+								> field elsewhere. But then the connection between
+								the two becomes weaker. TypeScript can no longer express
+								as clearly that the interval is required only when
+								the kind is <code>"periodically"</code>.
+							</p>
+							<p>
+								That is the real advantage of this pattern: the
+								variant and the data it needs travel together as
+								one typed object.
+							</p>
+						</div>
+					</section>
+
+					<section class="mt-10">
+						<h2 class="font-heading text-2xl text-text">
+							How the pattern works
+						</h2>
+						<div
+							class="mt-4 grid gap-4 text-base leading-7 text-text-muted"
+						>
+							<p>
+								First, the code defines two interfaces. <code
+									>OptimizeOnExit</code
+								>
+								represents the simple case with only one field:
+								<code>kind: "on-close"</code>. <code
+									>OptimizePeriodically</code
+								>
+								represents the richer case with two fields:
+								<code>kind: "periodically"</code> and <code
+									>interval</code
+								>.
+							</p>
+							<p>
+								Then both shapes are combined into one union
+								type:
+								<code
+									>Optimize = OptimizeOnExit |
+									OptimizePeriodically</code
+								>. Because both variants have a shared <code
+									>kind</code
+								> field with different literal values, TypeScript
+								can narrow correctly when you check that field later.
+								That is why it is called a discriminated union.
+							</p>
+							<p>
+								Finally, the exported <code>Optimize</code> object
+								acts like a friendly runtime API. <code
+									>Optimize.OnExit</code
+								> gives you the simple variant immediately, and
+								<code>Optimize.Periodically(interval)</code> builds
+								the variant that needs data.
+							</p>
+						</div>
+					</section>
+
+					<section class="mt-10">
+						<h2 class="font-heading text-2xl text-text">
+							Why this feels so good to use
+						</h2>
+						<div
+							class="mt-4 grid gap-4 text-base leading-7 text-text-muted"
+						>
+							<p>
+								The idea behind this pattern is inspired by Rust
+								enums. In Rust, a single enum can contain
+								variants that are just named cases and variants
+								that also carry data. This TypeScript version
+								borrows that idea, even though the implementation
+								looks different under the hood.
+							</p>
+							<p>
+								The call site becomes self-explanatory. Seeing
+								<code>Optimize.OnExit</code> or
+								<code
+									>Optimize.Periodically(60 * 60 * 1000)</code
+								> tells you both which mode is chosen and, when needed,
+								which configuration value belongs to it.
+							</p>
+							<p>
+								It is also hard to misuse. If someone chooses
+								the periodic mode, the interval is required
+								right there. They do not have to remember to
+								fill a second property somewhere else in a
+								config object.
+							</p>
+							<p>
+								What makes it feel good in practice is the API
+								shape itself. Some variants are plain
+								constants, some variants are constructor-like
+								helpers, and all of them produce values that
+								belong to one shared, strongly typed union.
+							</p>
+						</div>
+					</section>
+
+					<section class="mt-10">
+						<h2 class="font-heading text-2xl text-text">
+							Why the companion object matters
+						</h2>
+						<div
+							class="mt-4 grid gap-4 text-base leading-7 text-text-muted"
+						>
+							<p>
+								Technically, callers could build the objects by
+								hand. They could write
+								<code
+									>{
+										`{ kind: "periodically", interval: 60 * 60 * 1000 }`
+									}</code
+								>. But that is more fragile, more repetitive,
+								and less discoverable.
+							</p>
+							<p>
+								The companion object gives the API a clear entry
+								point. Editors can autocomplete <code
+									>Optimize.</code
+								> and immediately show the two valid construction
+								paths. That is a much nicer experience, especially
+								for beginners or for teammates who are seeing the
+								API for the first time.
+							</p>
+							<p>
+								The small <code>satisfies OptimizeOnExit</code> check
+								is also nice here. It verifies that the constant really
+								matches the declared shape without widening it into
+								a less precise type.
+							</p>
+						</div>
+					</section>
+				</article>
+			</div>
+
+			<div class="mt-10 flex justify-center">
+				<a href="#top" class="chip-link">Back to top</a>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<script is:inline>
+	const button = document.querySelector("[data-pattern-copy-button]");
+
+	if (button instanceof HTMLButtonElement) {
+		const label = button.querySelector(".pattern-copy-button__label") ?? button;
+		const previousLabel = label.textContent ?? "Copy";
+		const code = button.dataset.patternCopyCode ?? "";
+
+		button.addEventListener("click", async () => {
+			try {
+				await navigator.clipboard.writeText(code);
+				label.textContent = "Copied";
+			} catch {
+				label.textContent = "Failed";
+			}
+
+			window.setTimeout(() => {
+				label.textContent = previousLabel;
+			}, 1200);
+		});
+	}
+</script>
+
+<style>
+	:global(.pattern-frame) {
+		background: rgb(39 46 55);
+		box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+	}
+
+	:global(.pattern-page),
+	:global(.pattern-page p),
+	:global(.pattern-page li),
+	:global(.pattern-page a) {
+		overflow-wrap: anywhere;
+	}
+
+	:global(.pattern-code-wrap) {
+		position: relative;
+		min-width: 0;
+	}
+
+	:global(.pattern-frame .astro-code) {
+		background: transparent !important;
+		padding: 4.75rem 1rem 1rem;
+		font-size: 0.875rem;
+	}
+
+	:global(.pattern-page p code),
+	:global(.pattern-page li code) {
+		display: inline;
+		border-radius: 0.375rem !important;
+		background: rgb(255 255 255 / 0.08) !important;
+		padding: 0.12rem 0.38rem !important;
+		font-family:
+			ui-monospace,
+			SFMono-Regular,
+			SF Mono,
+			Menlo,
+			Consolas,
+			monospace !important;
+		font-size: 0.875em !important;
+		line-height: 1 !important;
+		color: rgb(214 220 229 / 0.94) !important;
+		white-space: normal;
+		box-decoration-break: clone;
+		-webkit-box-decoration-break: clone;
+	}
+
+	:global(.pattern-page a code) {
+		color: rgb(238 208 150 / 0.96) !important;
+	}
+
+	:global(.pattern-page a:hover code) {
+		background: rgb(255 194 84 / 0.12) !important;
+		color: rgb(246 221 171 / 0.98) !important;
+	}
+
+	:global(.pattern-copy-button) {
+		position: absolute;
+		right: 0.9rem;
+		top: 0.9rem;
+		z-index: 2;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		border-radius: 9999px;
+		border: 1px solid rgb(255 255 255 / 0.08);
+		background: rgb(25 31 39 / 0.92);
+		padding: 0.4rem 0.7rem;
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0.01em;
+		color: rgb(255 255 255 / 0.72);
+		transition:
+			background 150ms ease,
+			color 150ms ease,
+			border-color 150ms ease;
+	}
+
+	:global(.pattern-copy-button:hover) {
+		border-color: rgb(255 255 255 / 0.12);
+		background: rgb(20 25 32 / 0.96);
+		color: rgb(255 255 255 / 0.92);
+	}
+
+	:global(.pattern-copy-button__label) {
+		display: inline-block;
+		min-width: 2.4rem;
+		text-align: left;
+	}
+</style>

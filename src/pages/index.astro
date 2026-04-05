@@ -4,6 +4,8 @@ import Hero from "../components/hero.astro";
 import CatalogSection from "../components/home/catalog-section.astro";
 import ClosingCtaSection from "../components/home/closing-cta-section.astro";
 import FeatureTrioSection from "../components/home/feature-trio-section.astro";
+import PatternsSection from "../components/home/patterns-section.astro";
+import SnippetsSection from "../components/home/snippets-section.astro";
 import WhySection from "../components/home/why-section.astro";
 import Layout from "../layouts/layout.astro";
 import { parseRepose } from "../lib/repos";
@@ -23,19 +25,19 @@ const featureItems = [
 		label: "Runtime",
 		title: "Bun and TypeScript-only",
 		description:
-			"Everything in the collection is shaped for a Bun-native workflow without extra packaging layers or registry ceremony.",
+			"Everything here is shaped for a Bun-native workflow, from reusable catalog entries to patterns and snippets that stay close to real TypeScript code.",
 	},
 	{
 		label: "Use case",
-		title: "Small tools for repeated work",
+		title: "Code, ideas, and snippets",
 		description:
-			"We collect the helpers, defaults, and standards that keep earning a place in new projects instead of rewriting them again.",
+			"We collect the helpers, API shapes, and small copy-pasteable pieces that keep proving useful across more than one project.",
 	},
 	{
 		label: "Approach",
-		title: "Readable code with few dependencies",
+		title: "Readable building blocks",
 		description:
-			"Everything in the catalog stays intentionally small, easy to inspect, and careful about pulling in more external code than it needs.",
+			"Everything stays intentionally small, easy to inspect, and careful about adding complexity or pulling in more external code than it needs.",
 	},
 ];
 
@@ -56,28 +58,62 @@ const whyItems = [
 	{
 		title: "Solve repeated work once",
 		description:
-			"If a helper or standard keeps showing up in new codebases, we would rather add it to the catalog once than keep pasting slightly different versions around.",
+			"If a helper, pattern, or small snippet keeps showing up in new codebases, we would rather shape it once and keep reusing it than paste slightly different versions around.",
 	},
 	{
 		title: "Keep it small and legible",
 		description:
-			"Every catalog entry should stay readable. You can inspect the code, understand the tradeoffs, and adopt only the parts that belong in your project.",
+			"Everything here should stay readable. You can inspect the code, understand the tradeoffs, and adopt only the parts that belong in your project.",
 	},
 	{
-		title: "Use Git because it is pragmatic",
+		title: "Keep distribution simple",
 		description:
-			"Bun & Butter is Bun and TypeScript-only, so Git is the simplest distribution path. The repository stays the source of truth and Bun can install directly from it.",
+			"Bun & Butter is Bun and TypeScript-only, so Git stays the simplest distribution path. The repository remains the source of truth, and Bun can install directly from it.",
+	},
+];
+
+const patternItems = [
+	{
+		slug: "a-better-enum-alternative",
+		title: "A Better Enum Alternative",
+		kicker: "Enum ergonomics without enum limitations",
+		description:
+			"For APIs that should feel crisp, named, and hard to misuse, this pattern gives you the clarity of enums plus the flexibility to model richer variants when simple members stop being enough.",
+	},
+	{
+		slug: "branded-types-newtype-pattern",
+		title: "Branded Types / Newtype Pattern",
+		kicker: "Turn raw strings into domain values",
+		description:
+			"Use branded types to model things like IDs, usernames, and display names as distinct domain values. The result is stricter boundaries, clearer APIs, and fewer invalid values leaking through the system.",
+	},
+	{
+		slug: "branded-better-enum-type",
+		title: "Branded Better Enum Type",
+		kicker: "Enum values as real domain types",
+		description:
+			"Combine enum-like ergonomics with branded types when a closed set of values should also become a trusted domain value with parsing, guards, and a safer default.",
+	},
+	{
+		slug: "more-to-come",
+		title: "More to come",
+		kicker: "More patterns are on the way",
+		description:
+			"This section is still growing. More of the small architectural decisions and API patterns that keep proving useful will land here over time.",
+		comingSoon: true,
 	},
 ];
 ---
 
 <Layout
-	title="Bun & Butter | Bun and TypeScript catalog from Git"
-	description="A growing Bun and TypeScript-only catalog with practical standards, small helpers, and dependency-light building blocks."
+	title="Bun & Butter | Bun and TypeScript code, patterns, and snippets"
+	description="A growing Bun and TypeScript-only collection of reusable code, patterns, and snippets for real projects."
 >
 	<Hero />
 	<FeatureTrioSection items={featureItems} />
 	<CatalogSection items={repoCards} />
+	<PatternsSection items={patternItems} />
+	<SnippetsSection />
 	<WhySection items={whyItems} />
 	<ClosingCtaSection />
 

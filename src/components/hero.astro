@@ -20,16 +20,16 @@ import CodeFrame from "./code-frame.astro";
       <h1
         class="mx-auto mt-8 max-w-4xl text-3xl font-semibold leading-tight tracking-tight text-balance sm:text-5xl lg:text-7xl"
       >
-        A catalog for the code
-        <span class="text-brand-400">that keeps coming back.</span>
+        What deserves
+        <span class="text-brand-400">a place in the next pan.</span>
       </h1>
 
       <p
         class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-text-muted sm:text-xl"
       >
-        We build Bun & Butter from the standards and small helpers we keep
-        reusing in codebases. Every catalog entry stays Bun and TypeScript-only,
-        dependency-light, and ready to install straight from Git.
+        Some things keep showing up in project after project: a helper, a
+        pattern, a small snippet worth keeping around. Bun & Butter is where we
+        collect those pieces, clean them up, and make them easy to reuse.
       </p>
 
       <CodeFrame
@@ -45,13 +45,23 @@ import CodeFrame from "./code-frame.astro";
       </CodeFrame>
 
       <div
-        class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+        class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:flex-wrap sm:justify-center"
       >
         <a href="#catalog" class="button-brand w-full sm:w-auto"
           >Browse the catalog</a
         >
+        <a
+          href="#patterns"
+          class="button-muted hero-patterns-link w-full sm:w-auto"
+          >See the patterns</a
+        >
+        <a
+          href="#snippets"
+          class="button-muted hero-snippets-link w-full sm:w-auto"
+          >Use the snippets</a
+        >
         <a href="#why" class="button-muted w-full sm:w-auto"
-          >Why Bun & Butter</a
+          >Why?</a
         >
       </div>
     </div>
@@ -83,5 +93,33 @@ import CodeFrame from "./code-frame.astro";
 
   .hero-token-fn {
     color: rgb(255 176 79 / 0.96);
+  }
+
+  .hero-patterns-link {
+    border-color: rgb(255 255 255 / 0.12) !important;
+    background: rgb(255 255 255 / 0.05) !important;
+  }
+
+  .hero-patterns-link:hover {
+    border-color: rgb(255 196 80 / 0.42) !important;
+    background: rgb(255 196 80 / 0.16) !important;
+    color: rgb(255 248 220 / 0.98) !important;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 12px 28px rgb(0 0 0 / 0.16);
+  }
+
+  .hero-snippets-link {
+    border-color: rgb(255 255 255 / 0.12) !important;
+    background: rgb(255 255 255 / 0.04) !important;
+  }
+
+  .hero-snippets-link:hover {
+    border-color: rgb(255 255 255 / 0.24) !important;
+    background: rgb(255 255 255 / 0.1) !important;
+    color: rgb(255 255 255 / 0.96) !important;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 12px 28px rgb(0 0 0 / 0.14);
   }
 </style>

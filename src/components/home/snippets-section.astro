@@ -1,0 +1,53 @@
+<div id="snippets" class="scroll-mt-12 sm:scroll-mt-12"></div>
+
+<section class="container-shell section-space">
+	<div class="section-heading">
+		<div>
+			<div class="eyebrow">Snippets</div>
+			<h2 class="mt-4 font-heading text-3xl text-text sm:text-4xl">
+				Ready to copy. Soon.
+			</h2>
+		</div>
+		<p class="text-base leading-7 text-text-muted">
+			This section will collect ready-to-copy snippets for the small pieces of
+			code that keep showing up across projects.
+		</p>
+	</div>
+
+	<div class="mt-10 grid gap-6 md:grid-cols-2">
+		<article class="snippet-card snippet-card--coming-soon relative p-6 sm:p-8">
+			<h3 class="font-heading text-2xl leading-tight text-text">
+				More to come
+			</h3>
+			<p class="mt-5 max-w-xl text-base leading-7 text-text-muted">
+				Ready-to-paste helpers and small drop-in snippets will land here next.
+			</p>
+		</article>
+	</div>
+</section>
+
+<style>
+	@reference "../../styles/global.css";
+
+	.snippet-card--coming-soon {
+		@apply overflow-hidden rounded-3xl border border-dashed border-white/12 bg-white/[0.02];
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.04),
+			0 18px 44px rgb(0 0 0 / 0.12);
+	}
+
+	.snippet-card--coming-soon::after {
+		content: "Soon";
+		position: absolute;
+		right: 1.5rem;
+		top: 1.5rem;
+		border-radius: 9999px;
+		border: 1px solid rgb(255 255 255 / 0.08);
+		background: rgb(255 255 255 / 0.04);
+		padding: 0.3rem 0.7rem;
+		font-size: 0.7rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: rgb(255 255 255 / 0.52);
+	}
+</style>

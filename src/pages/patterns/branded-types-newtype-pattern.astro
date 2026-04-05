@@ -1,0 +1,413 @@
+---
+import { Code } from "astro:components";
+import CodeFrame from "../../components/code-frame.astro";
+import Layout from "../../layouts/layout.astro";
+
+const patternCodeRootId = "pattern-code-branded-types-newtype-pattern";
+const code = `declare const idTag: unique symbol;
+
+/**
+ * User identifier.
+ */
+export type UserID = string & { readonly [idTag]: true };
+
+/**
+ * User identifier helpers.
+ */
+export const UserID = (() => {
+	const uuidV7Regex =
+		/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+	return {
+		/**
+		 * Creates a new valid user identifier.
+		 */
+		new(): UserID {
+			return Bun.randomUUIDv7() as UserID;
+		},
+
+		/**
+		 * Checks whether the provided string is a valid \`UserID\`.
+		 */
+		is(value: string): value is UserID {
+			return uuidV7Regex.test(value);
+		},
+
+		/**
+		 * Parses a string into a \`UserID\`.
+		 *
+		 * @throws {Error} If the provided value is not a valid \`UserID\`.
+		 */
+		parse(value: string): UserID {
+			if (!this.is(value)) {
+				throw new Error("Invalid user id");
+			}
+			return value;
+		},
+	};
+})();`;
+
+const exampleCode = `function loadUser(userID: UserID) {
+	// ...
+}
+
+const createdUserID = UserID.new();
+loadUser(createdUserID);
+
+const maybeUserID = params.userID;
+if (UserID.is(maybeUserID)) {
+	loadUser(maybeUserID); // narrowed by the guard function
+}
+
+try {
+	const parsedUserID = UserID.parse(body.userID);
+	loadUser(parsedUserID);
+} catch (error) {
+	console.error(error);
+}`;
+---
+
+<Layout
+	title="Branded Types / Newtype Pattern | Bun & Butter"
+	description="A beginner-friendly pattern for modeling domain values like IDs, usernames, and display names with branded types and small parsing helpers."
+>
+	<section class="container-shell min-w-0 pb-20 pt-12 sm:pb-24">
+		<div class="pattern-page mx-auto max-w-3xl min-w-0">
+			<a href="/#patterns" class="chip-link">Back to patterns</a>
+
+			<div class="mt-8">
+				<div class="eyebrow">Turn raw strings into domain values</div>
+				<h1
+					class="mt-5 font-heading text-4xl leading-tight text-text sm:text-5xl"
+				>
+					Branded Types / Newtype Pattern
+				</h1>
+				<p class="mt-6 max-w-2xl text-lg leading-8 text-text-muted">
+					This is the TypeScript version of the classic newtype pattern. You
+					take a primitive like <code>string</code>, give it a more specific
+					domain meaning, and stop treating every raw string as interchangeable.
+					That works well for <code>UserID</code>, but also for usernames,
+					display names, slugs, emails, and many other values that deserve more
+					structure than a plain primitive.
+				</p>
+			</div>
+
+			<CodeFrame
+				id={patternCodeRootId}
+				title="user-id.ts"
+				class="mt-10"
+				contentClass="pattern-frame"
+			>
+				<div class="pattern-code-wrap">
+					<button
+						type="button"
+						class="pattern-copy-button"
+						aria-label="Copy source code"
+						data-pattern-copy-button
+						data-pattern-copy-code={code}
+					>
+						<svg
+							viewBox="0 0 24 24"
+							class="size-4"
+							aria-hidden="true"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<rect
+								x="9"
+								y="9"
+								width="10"
+								height="10"
+								rx="2"
+								stroke="currentColor"
+								stroke-width="1.8"
+							/>
+							<path
+								d="M6 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"
+								stroke="currentColor"
+								stroke-width="1.8"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+						<span class="pattern-copy-button__label">Copy</span>
+					</button>
+					<Code code={code} lang="ts" theme="github-dark" class="pattern-code" />
+				</div>
+			</CodeFrame>
+
+			<div class="mt-10 grid min-w-0 gap-6">
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<h2 class="font-heading text-2xl text-text">
+						When to reach for this pattern
+					</h2>
+					<div class="mt-4 grid gap-4 text-base leading-7 text-text-muted">
+						<p>
+							Use it when several values are all primitives at runtime, but mean
+							different things in your domain. IDs are the obvious example, but
+							the same pattern also works for usernames, display names, slugs,
+							email addresses, or any other string that should not be treated as
+							just “some string”.
+						</p>
+						<p>
+							If you have ever passed the wrong value into a function and
+							TypeScript could not help because everything was typed as
+							<code>string</code>, this pattern is a very good fit.
+						</p>
+					</div>
+				</article>
+
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<h2 class="font-heading text-2xl text-text">Example</h2>
+					<p class="mt-4 text-base leading-7 text-text-muted">
+						Here are the three most common entry points. <code>new()</code>
+						creates a valid value inside your own system and does not fail,
+						because it only ever produces a valid <code>UserID</code>.
+						<code>is()</code> is a guard function, so it validates and narrows
+						the type at the same time. <code>parse()</code> is useful at
+						boundaries where invalid input should fail immediately, which also
+						means it can throw.
+					</p>
+
+					<CodeFrame title="demo.ts" class="mt-6" contentClass="pattern-frame">
+						<Code code={exampleCode} lang="ts" theme="github-dark" />
+					</CodeFrame>
+				</article>
+
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<h2 class="font-heading text-2xl text-text">TLDR;</h2>
+					<div class="mt-4 grid gap-4 text-base leading-7 text-text-muted">
+						<p>
+							Wrap a primitive in a branded type, then expose one small helper
+							object for creation, validation, and parsing. That gives you the
+							benefits of a domain type without turning simple values into heavy
+							objects or classes.
+						</p>
+						<p>
+							If you are newer to TypeScript, the simple mental model is: keep
+							the runtime value boring, but make the type system more specific.
+						</p>
+					</div>
+				</article>
+
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<section>
+						<h2 class="font-heading text-2xl text-text">
+							What the branded type is doing
+						</h2>
+						<div class="mt-4 grid gap-4 text-base leading-7 text-text-muted">
+							<p>
+								The type <code>UserID = string &amp; {`{ readonly [idTag]: true }`}</code>
+								is still a string, but not just any string. The extra branded part
+								makes TypeScript treat it as a separate type that cannot be mixed
+								with plain strings by accident.
+							</p>
+							<p>
+								That means a function that expects <code>UserID</code> becomes
+								more honest. It no longer says “give me any string”. It says “give
+								me a string that has already been recognized as a valid user id”.
+							</p>
+						</div>
+					</section>
+
+					<section class="mt-10">
+						<h2 class="font-heading text-2xl text-text">
+							Why the helper object matters
+						</h2>
+						<div class="mt-4 grid gap-4 text-base leading-7 text-text-muted">
+							<p>
+								The type alone is not enough. You also need a clear place where
+								these values come from. That is why the companion object is so
+								useful. <code>UserID.new()</code> creates a fresh valid id,
+								<code>UserID.is(value)</code> acts as a guard function for raw
+								strings, and
+								<code>UserID.parse(value)</code> turns untrusted input into a real
+								<code>UserID</code> or throws.
+							</p>
+							<p>
+								Without that helper object, teams often end up scattering regexes,
+								type assertions, and ad-hoc parsing logic all over the codebase.
+								This pattern keeps the rules in one place.
+							</p>
+							<p>
+								A very nice detail is <code>is()</code> as a guard function.
+								Because it is written as a type predicate,
+								<code>value is UserID</code>, it validates at runtime and narrows
+								the type for TypeScript at the same time.
+							</p>
+						</div>
+					</section>
+
+					<section class="mt-10">
+						<h2 class="font-heading text-2xl text-text">
+							The architectural payoff
+						</h2>
+						<div class="mt-4 grid gap-4 text-base leading-7 text-text-muted">
+							<p>
+								The biggest win is architectural, not cosmetic. Raw input enters
+								at the boundaries of your system as plain <code>string</code>.
+								There you either validate it and turn it into a <code>UserID</code>,
+								or you reject it immediately.
+							</p>
+							<p>
+								Once that boundary is crossed, the rest of the application can
+								work with the stronger type. In normal application flow, there is
+								no longer a concept of an “invalid <code>UserID</code>” floating
+								around in your domain layer, because invalid values never become
+								<code>UserID</code> in the first place.
+							</p>
+							<p>
+								That changes the shape of the whole codebase. Validation becomes
+								concentrated near the edges, while the inside of the system gets
+								simpler because it can assume stronger invariants.
+							</p>
+						</div>
+					</section>
+
+					<section class="mt-10">
+						<h2 class="font-heading text-2xl text-text">
+							Why this feels good in practice
+						</h2>
+						<div class="mt-4 grid gap-4 text-base leading-7 text-text-muted">
+							<p>
+								It improves safety without making the runtime model heavy. You do
+								not need a class instance just to represent an ID. You still pass
+								plain strings around at runtime, which keeps serialization,
+								logging, and storage simple.
+							</p>
+							<p>
+								At the same time, the call site becomes more self-explanatory.
+								Seeing <code>UserID.parse(params.userID)</code> tells the reader
+								exactly what is happening: raw input is being validated and turned
+								into a trusted identifier before use.
+							</p>
+							<p>
+								This also makes wrong calls harder to write. If a function expects
+								<code>UserID</code>, you cannot casually hand it some unrelated
+								string and hope for the best. The same advantage applies to other
+								branded values like usernames or display names.
+							</p>
+						</div>
+					</section>
+
+				</article>
+			</div>
+
+			<div class="mt-10 flex justify-center">
+				<a href="#top" class="chip-link">Back to top</a>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<script is:inline>
+	const button = document.querySelector("[data-pattern-copy-button]");
+
+	if (button instanceof HTMLButtonElement) {
+		const label = button.querySelector(".pattern-copy-button__label") ?? button;
+		const previousLabel = label.textContent ?? "Copy";
+		const code = button.dataset.patternCopyCode ?? "";
+
+		button.addEventListener("click", async () => {
+			try {
+				await navigator.clipboard.writeText(code);
+				label.textContent = "Copied";
+			} catch {
+				label.textContent = "Failed";
+			}
+
+			window.setTimeout(() => {
+				label.textContent = previousLabel;
+			}, 1200);
+		});
+	}
+</script>
+
+<style>
+	:global(.pattern-frame) {
+		background: rgb(39 46 55);
+		box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+	}
+
+	:global(.pattern-page),
+	:global(.pattern-page p),
+	:global(.pattern-page li),
+	:global(.pattern-page a) {
+		overflow-wrap: anywhere;
+	}
+
+	:global(.pattern-code-wrap) {
+		position: relative;
+		min-width: 0;
+	}
+
+	:global(.pattern-frame .astro-code) {
+		background: transparent !important;
+		padding: 4.75rem 1rem 1rem;
+		font-size: 0.875rem;
+	}
+
+	:global(.pattern-page p code),
+	:global(.pattern-page li code) {
+		display: inline;
+		border-radius: 0.375rem !important;
+		background: rgb(255 255 255 / 0.08) !important;
+		padding: 0.12rem 0.38rem !important;
+		font-family:
+			ui-monospace,
+			SFMono-Regular,
+			SF Mono,
+			Menlo,
+			Consolas,
+			monospace !important;
+		font-size: 0.875em !important;
+		line-height: 1 !important;
+		color: rgb(214 220 229 / 0.94) !important;
+		white-space: normal;
+		box-decoration-break: clone;
+		-webkit-box-decoration-break: clone;
+	}
+
+	:global(.pattern-page a code) {
+		color: rgb(238 208 150 / 0.96) !important;
+	}
+
+	:global(.pattern-page a:hover code) {
+		background: rgb(255 194 84 / 0.12) !important;
+		color: rgb(246 221 171 / 0.98) !important;
+	}
+
+	:global(.pattern-copy-button) {
+		position: absolute;
+		right: 0.9rem;
+		top: 0.9rem;
+		z-index: 2;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		border-radius: 9999px;
+		border: 1px solid rgb(255 255 255 / 0.08);
+		background: rgb(25 31 39 / 0.92);
+		padding: 0.4rem 0.7rem;
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0.01em;
+		color: rgb(255 255 255 / 0.72);
+		transition:
+			background 150ms ease,
+			color 150ms ease,
+			border-color 150ms ease;
+	}
+
+	:global(.pattern-copy-button:hover) {
+		border-color: rgb(255 255 255 / 0.12);
+		background: rgb(20 25 32 / 0.96);
+		color: rgb(255 255 255 / 0.92);
+	}
+
+	:global(.pattern-copy-button__label) {
+		display: inline-block;
+		min-width: 2.4rem;
+		text-align: left;
+	}
+</style>

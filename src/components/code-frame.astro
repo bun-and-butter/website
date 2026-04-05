@@ -16,7 +16,12 @@ const { title, id, class: className = "", contentClass = "" } = Astro.props;
 			<span></span>
 			<span></span>
 		</div>
-		<div class="code-frame__tab">{title}</div>
+		<div class="code-frame__meta">
+			<div class="code-frame__tab">{title}</div>
+			<div class="code-frame__actions">
+				<slot name="actions" />
+			</div>
+		</div>
 	</div>
 
 	<div class:list={["code-frame__content", contentClass]}>
@@ -61,6 +66,14 @@ const { title, id, class: className = "", contentClass = "" } = Astro.props;
 	.code-frame__tab {
 		@apply min-w-0 max-w-full overflow-x-auto whitespace-nowrap rounded-full border border-white/8 bg-white/4 px-3 py-1 text-xs font-medium tracking-wide text-white/70;
 		-webkit-overflow-scrolling: touch;
+	}
+
+	.code-frame__meta {
+		@apply flex min-w-0 items-center gap-3;
+	}
+
+	.code-frame__actions {
+		@apply flex shrink-0 items-center gap-2;
 	}
 
 	.code-frame__content {

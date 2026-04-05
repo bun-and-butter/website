@@ -1,0 +1,379 @@
+---
+import { Code } from "astro:components";
+import CodeFrame from "../../components/code-frame.astro";
+import Layout from "../../layouts/layout.astro";
+
+const patternCodeRootId = "pattern-code-branded-better-enum-type";
+const code = `interface LocaleValues {
+	/** Follow the user's environment or browser preference. */
+	Auto: "auto";
+	/** German locale. */
+	De: "de";
+	/** English locale. */
+	En: "en";
+}
+
+declare const localeTag: unique symbol;
+
+const values = {
+	Auto: "auto",
+	De: "de",
+	En: "en",
+} as const satisfies LocaleValues;
+
+type LocaleValue = (typeof values)[keyof typeof values];
+
+/**
+ * Locale value supported by the user settings model.
+ */
+export type Locale = LocaleValue & { readonly [localeTag]: true };
+
+/**
+ * Supported locale values for user-facing web settings.
+ */
+export const Locale = (() => {
+	const locales = new Set<LocaleValue>(Object.values(values));
+
+	return {
+		...values,
+
+		/**
+		 * Default Locale.
+		 */
+		default: values.Auto as Locale,
+
+		/**
+		 * Checks whether the provided string is a valid \`Locale\`.
+		 */
+		is(value: string): value is Locale {
+			return locales.has(value as LocaleValue);
+		},
+
+		/**
+		 * Parses a string into a \`Locale\`.
+		 *
+		 * @throws {Error} If the provided value is not a valid \`Locale\`.
+		 */
+		parse(value: string): Locale {
+			if (!this.is(value)) {
+				throw new Error("Invalid locale");
+			}
+			return value;
+		},
+	};
+})();`;
+
+const exampleCode = `const localeFromConfig = Locale.parse(input.locale);
+
+const localeForSettings = Locale.is(query.locale)
+	? query.locale
+	: Locale.default;
+
+renderSettingsPage({
+	locale: localeForSettings,
+});`;
+---
+
+<Layout
+	title="Branded Better Enum Type | Bun & Butter"
+	description="A compact pattern that combines branded types with enum-like values, parsing, and guard functions for safer domain settings."
+>
+	<section class="container-shell min-w-0 pb-20 pt-12 sm:pb-24">
+		<div class="pattern-page mx-auto max-w-3xl min-w-0">
+			<a href="/#patterns" class="chip-link">Back to patterns</a>
+
+			<div class="mt-8">
+				<div class="eyebrow">Enum values as real domain types</div>
+				<h1
+					class="mt-5 font-heading text-4xl leading-tight text-text sm:text-5xl"
+				>
+					Branded Better Enum Type
+				</h1>
+				<p class="mt-6 max-w-2xl text-lg leading-8 text-text-muted">
+					This pattern combines ideas from
+					<a href="/patterns/branded-types-newtype-pattern"
+						><code>Branded Types / Newtype Pattern</code></a
+					>
+					and
+					<a href="/patterns/a-better-enum-alternative"
+						><code>A Better Enum Alternative</code></a
+					>. The result is an enum-like value set that still behaves like a real
+					domain type, with parsing, guard functions, and a trusted default.
+				</p>
+			</div>
+
+			<CodeFrame
+				id={patternCodeRootId}
+				title="locale.ts"
+				class="mt-10"
+				contentClass="pattern-frame"
+			>
+				<div class="pattern-code-wrap">
+					<button
+						type="button"
+						class="pattern-copy-button"
+						aria-label="Copy source code"
+						data-pattern-copy-button
+						data-pattern-copy-code={code}
+					>
+						<svg
+							viewBox="0 0 24 24"
+							class="size-4"
+							aria-hidden="true"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<rect
+								x="9"
+								y="9"
+								width="10"
+								height="10"
+								rx="2"
+								stroke="currentColor"
+								stroke-width="1.8"
+							/>
+							<path
+								d="M6 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"
+								stroke="currentColor"
+								stroke-width="1.8"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+						<span class="pattern-copy-button__label">Copy</span>
+					</button>
+					<Code code={code} lang="ts" theme="github-dark" class="pattern-code" />
+				</div>
+			</CodeFrame>
+
+			<div class="mt-10 grid min-w-0 gap-6">
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<h2 class="font-heading text-2xl text-text">
+						When to reach for this pattern
+					</h2>
+					<div class="mt-4 grid gap-4 text-base leading-7 text-text-muted">
+						<p>
+							Use it when you have a closed set of allowed values, but those
+							values should also be treated as a proper domain type instead of
+							raw strings. Locale settings are a good example, but the same idea
+							also works for themes, roles, feature modes, or other user-facing
+							preferences.
+						</p>
+						<p>
+							This is especially useful when values come from untrusted boundaries
+							such as query params, cookies, forms, or persisted config. You want
+							enum-like ergonomics inside the app, but you also want a clear way
+							to reject invalid input at the edges.
+						</p>
+					</div>
+				</article>
+
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<h2 class="font-heading text-2xl text-text">Example</h2>
+					<p class="mt-4 text-base leading-7 text-text-muted">
+						The helper object covers the three common cases again: strict parsing,
+						a guard-based conditional path, and a trusted default for fallback
+						behavior.
+					</p>
+
+					<CodeFrame title="demo.ts" class="mt-6" contentClass="pattern-frame">
+						<Code code={exampleCode} lang="ts" theme="github-dark" />
+					</CodeFrame>
+				</article>
+
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<h2 class="font-heading text-2xl text-text">TLDR;</h2>
+					<div class="mt-4 grid gap-4 text-base leading-7 text-text-muted">
+						<p>
+							First model the allowed values like a better enum. Then brand the
+							result so it becomes a domain type instead of “just another
+							string”.
+						</p>
+						<p>
+							This gives you explicit named values like <code>Locale.Auto</code>,
+							but also parsing, type guards, and the guarantee that trusted
+							application code only works with valid locale values.
+						</p>
+					</div>
+				</article>
+
+				<article class="glass-panel-soft min-w-0 p-6 sm:p-8">
+					<section>
+						<h2 class="font-heading text-2xl text-text">
+							What this combines
+						</h2>
+						<div class="mt-4 grid gap-4 text-base leading-7 text-text-muted">
+							<p>
+								The <a href="/patterns/a-better-enum-alternative"><code>A Better Enum Alternative</code></a>
+								pattern gives you named values and a clear runtime API. The
+								<a href="/patterns/branded-types-newtype-pattern"><code>Branded Types / Newtype Pattern</code></a>
+								pattern gives you stronger domain boundaries and safer parsing.
+							</p>
+							<p>
+								This pattern combines both. <code>Locale.Auto</code>,
+								<code>Locale.De</code>, and <code>Locale.En</code> are easy to use
+								like enum members, but the resulting values are still treated as a
+								real domain type instead of plain strings.
+							</p>
+						</div>
+					</section>
+
+					<section class="mt-10">
+						<h2 class="font-heading text-2xl text-text">
+							Why branding still matters here
+						</h2>
+						<div class="mt-4 grid gap-4 text-base leading-7 text-text-muted">
+							<p>
+								Without the brand, a locale would just be the union
+								<code>"auto" | "de" | "en"</code>. That is already helpful, but
+								it still behaves like an ordinary string union throughout the
+								codebase.
+							</p>
+							<p>
+								With the brand, <code>Locale</code> becomes a distinct domain
+								value. That means you can make it clear which values have already
+								been validated and which values are still raw input from outside
+								the system.
+							</p>
+						</div>
+					</section>
+
+					<section class="mt-10">
+						<h2 class="font-heading text-2xl text-text">
+							The architectural payoff
+						</h2>
+						<div class="mt-4 grid gap-4 text-base leading-7 text-text-muted">
+							<p>
+								The important consequence is the same as with branded IDs: once a
+								value has become <code>Locale</code>, normal application code does
+								not have to keep wondering whether it might still be invalid.
+							</p>
+							<p>
+								Validation stays at the boundaries. Inside the domain layer, you
+								work with trusted values like <code>Locale</code> and
+								<code>Locale.default</code> instead of raw strings from forms,
+								query params, or persisted settings.
+							</p>
+						</div>
+					</section>
+				</article>
+			</div>
+
+			<div class="mt-10 flex justify-center">
+				<a href="#top" class="chip-link">Back to top</a>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<script is:inline>
+	const button = document.querySelector("[data-pattern-copy-button]");
+
+	if (button instanceof HTMLButtonElement) {
+		const label = button.querySelector(".pattern-copy-button__label") ?? button;
+		const previousLabel = label.textContent ?? "Copy";
+		const code = button.dataset.patternCopyCode ?? "";
+
+		button.addEventListener("click", async () => {
+			try {
+				await navigator.clipboard.writeText(code);
+				label.textContent = "Copied";
+			} catch {
+				label.textContent = "Failed";
+			}
+
+			window.setTimeout(() => {
+				label.textContent = previousLabel;
+			}, 1200);
+		});
+	}
+</script>
+
+<style>
+	:global(.pattern-frame) {
+		background: rgb(39 46 55);
+		box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+	}
+
+	:global(.pattern-page),
+	:global(.pattern-page p),
+	:global(.pattern-page li),
+	:global(.pattern-page a) {
+		overflow-wrap: anywhere;
+	}
+
+	:global(.pattern-code-wrap) {
+		position: relative;
+		min-width: 0;
+	}
+
+	:global(.pattern-frame .astro-code) {
+		background: transparent !important;
+		padding: 4.75rem 1rem 1rem;
+		font-size: 0.875rem;
+	}
+
+	:global(.pattern-page p code),
+	:global(.pattern-page li code) {
+		display: inline;
+		border-radius: 0.375rem !important;
+		background: rgb(255 255 255 / 0.08) !important;
+		padding: 0.12rem 0.38rem !important;
+		font-family:
+			ui-monospace,
+			SFMono-Regular,
+			SF Mono,
+			Menlo,
+			Consolas,
+			monospace !important;
+		font-size: 0.875em !important;
+		line-height: 1 !important;
+		color: rgb(214 220 229 / 0.94) !important;
+		white-space: normal;
+		box-decoration-break: clone;
+		-webkit-box-decoration-break: clone;
+	}
+
+	:global(.pattern-page a code) {
+		color: rgb(238 208 150 / 0.96) !important;
+	}
+
+	:global(.pattern-page a:hover code) {
+		background: rgb(255 194 84 / 0.12) !important;
+		color: rgb(246 221 171 / 0.98) !important;
+	}
+
+	:global(.pattern-copy-button) {
+		position: absolute;
+		right: 0.9rem;
+		top: 0.9rem;
+		z-index: 2;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		border-radius: 9999px;
+		border: 1px solid rgb(255 255 255 / 0.08);
+		background: rgb(25 31 39 / 0.92);
+		padding: 0.4rem 0.7rem;
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0.01em;
+		color: rgb(255 255 255 / 0.72);
+		transition:
+			background 150ms ease,
+			color 150ms ease,
+			border-color 150ms ease;
+	}
+
+	:global(.pattern-copy-button:hover) {
+		border-color: rgb(255 255 255 / 0.12);
+		background: rgb(20 25 32 / 0.96);
+		color: rgb(255 255 255 / 0.92);
+	}
+
+	:global(.pattern-copy-button__label) {
+		display: inline-block;
+		min-width: 2.4rem;
+		text-align: left;
+	}
+</style>

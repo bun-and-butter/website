@@ -1,0 +1,93 @@
+---
+interface Props {
+	items: {
+		slug: string;
+		title: string;
+		kicker: string;
+		description: string;
+		comingSoon?: boolean;
+	}[];
+}
+
+const { items } = Astro.props;
+---
+
+<div id="patterns" class="scroll-mt-12 sm:scroll-mt-12"></div>
+
+<section class="container-shell section-space">
+	<div class="section-heading">
+		<div>
+			<div class="eyebrow">Patterns</div>
+			<h2 class="mt-4 font-heading text-3xl text-text sm:text-4xl">
+				Patterns worth reusing.
+			</h2>
+		</div>
+		<p class="text-base leading-7 text-text-muted">
+			Some of the most valuable things in a codebase are not libraries, but
+			reusable ways of modeling data, shaping APIs, and keeping system
+			boundaries honest. This section collects those patterns and explains why
+			they are worth carrying into the next project.
+		</p>
+	</div>
+
+	<div class="mt-10 grid gap-6 md:grid-cols-2">
+		{
+			items.map((pattern) => (
+				<article
+					class:list={[
+						"relative p-6 sm:p-8",
+						pattern.comingSoon
+							? "pattern-card pattern-card--coming-soon"
+							: "glass-panel-soft",
+					]}
+				>
+					{
+						!pattern.comingSoon && (
+							<a
+								href={`/patterns/${pattern.slug}`}
+								aria-label={`Open pattern details for ${pattern.title}`}
+								class="absolute inset-0 z-10"
+							/>
+						)
+					}
+
+					<h3 class="font-heading text-2xl leading-tight text-text">
+						{pattern.title}
+					</h3>
+					<p class="mt-3 text-sm uppercase tracking-[0.22em] text-brand-300">
+						{pattern.kicker}
+					</p>
+					<p class="mt-5 text-base leading-7 text-text-muted">
+						{pattern.description}
+					</p>
+				</article>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	@reference "../../styles/global.css";
+
+	.pattern-card--coming-soon {
+		@apply overflow-hidden rounded-3xl border border-dashed border-white/12 bg-white/[0.02];
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.04),
+			0 18px 44px rgb(0 0 0 / 0.14);
+	}
+
+	.pattern-card--coming-soon::after {
+		content: "More to come";
+		position: absolute;
+		right: 1.5rem;
+		top: 1.5rem;
+		border-radius: 9999px;
+		border: 1px solid rgb(255 255 255 / 0.08);
+		background: rgb(255 255 255 / 0.04);
+		padding: 0.3rem 0.7rem;
+		font-size: 0.7rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: rgb(255 255 255 / 0.5);
+	}
+</style>
